@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DonghuaX Pro Ultimate - Full JSON</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1', // Indigo 500
+                        secondary: '#8b5cf6', // Violet 500
+                        dark: '#0f0f13',
+                        surface: '#18181b',
+                        accent: '#f43f5e'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pop': 'popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        popIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* CORE STYLES & RESET */
+        :root {
+            --glass-bg: rgba(20, 20, 23, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        /* SCROLLBAR & UTILITIES */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .glass-nav {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* CUSTOM PLAYER CONTROLS */
+        .video-wrapper { position: relative; width: 100%; background: #000; }
+        
+        /* Slider Range Style */
+        input[type=range] {
+            -webkit-appearance: none; background: transparent; height: 4px; border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px; background: #6366f1; border-radius: 50%; cursor: pointer; margin-top: -4px; box-shadow: 0 0 10px rgba(99,102,241,0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 2px;
+        }
+
+        /* Loader Animation */
+        .loader-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-left-color: #6366f1;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Navigation Active State */
+        .nav-item.active i { color: #6366f1; transform: translateY(-3px); text-shadow: 0 0 15px rgba(99, 102, 241, 0.6); }
+        .nav-item.active span { color: #6366f1; opacity: 1; font-weight: 600; }
+        .nav-item i, .nav-item span { transition: all 0.3s ease; }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #1f1f23 25%, #2a2a30 50%, #1f1f23 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-white">
+
+    <div id="splash-screen" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center transition-opacity duration-700">
+        <div class="relative mb-6">
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center animate-bounce shadow-[0_0_40px_rgba(99,102,241,0.4)]">
+                <i class="fas fa-dragon text-5xl text-white"></i>
+            </div>
+            <div class="absolute -inset-4 bg-primary/20 blur-2xl rounded-full -z-10 animate-pulse-slow"></div>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">ReyWebanime<span class="text-primary">X</span></h1>
+        <div class="mt-8 w-40 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div class="h-full bg-primary animate-[loading_1.5s_ease-in-out_infinite]" style="width: 50%"></div>
+        </div>
+        <p class="text-gray-500 text-[10px] mt-4 font-mono">INITIALIZING SERVER...</p>
+    </div>
+
+    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[10000] w-[90%] max-w-sm pointer-events-none"></div>
+
+    <div id="app" class="hidden min-h-screen pb-[100px]">
+        
+        <header id="main-header" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 px-6 py-4 flex justify-between items-center bg-gradient-to-b from-black/90 to-transparent">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+                    <i class="fas fa-dragon text-white text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold leading-none tracking-wide">ReywebAnime</h1>
+                    <p class="text-[9px] text-primary font-bold uppercase tracking-wider">Premium v3.0</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="Router.navigate('search-view')" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center active:scale-90 transition-transform">
+                    <i class="fas fa-search text-gray-300 text-sm"></i>
+                </button>
+                <div class="w-10 h-10 rounded-full glass-panel overflow-hidden border border-white/10" onclick="Router.navigate('profile-view')">
+                    <img src="https://ui-avatars.com/api/?name=Wibu+Indo&background=6366f1&color=fff" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </header>
+
+        <section id="home-view" class="view-section pt-0 animate-fade-in">
+            <div class="swiper main-swiper w-full aspect-[4/5] md:aspect-video relative mask-image-b">
+                <div class="swiper-wrapper" id="hero-slider-container">
+                    </div>
+                <div class="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black via-black/80 to-transparent z-10 pointer-events-none"></div>
+                <div class="swiper-pagination !bottom-8 !left-6 !text-left !justify-start z-20"></div>
+            </div>
+
+            <div class="px-5 mt-2 relative z-20">
+                <div class="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-2">
+                    <button class="px-5 py-2.5 rounded-full bg-white text-black font-bold text-xs whitespace-nowrap shadow-[0_0_15px_rgba(255,255,255,0.3)]">All Anime</button>
+                    <button class="px-5 py-2.5 rounded-full glass-panel text-gray-300 font-medium text-xs whitespace-nowrap border border-white/5 active:bg-primary/50">Cultivation</button>
+                    <button class="px-5 py-2.5 rounded-full glass-panel text-gray-300 font-medium text-xs whitespace-nowrap border border-white/5 active:bg-primary/50">Martial Arts</button>
+                    <button class="px-5 py-2.5 rounded-full glass-panel text-gray-300 font-medium text-xs whitespace-nowrap border border-white/5 active:bg-primary/50">Fantasy</button>
+                </div>
+
+                <div class="flex justify-between items-end mb-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fas fa-fire text-accent animate-pulse"></i> Sedang Trending
+                    </h3>
+                </div>
+                <div id="trending-grid" class="flex overflow-x-auto gap-4 no-scrollbar pb-6 mb-4">
+                    </div>
+
+                <div class="flex justify-between items-end mb-4">
+                    <h3 class="text-lg font-bold text-white">Rilis Terbaru</h3>
+                    <button class="text-xs text-primary font-bold">Lihat Semua</button>
+                </div>
+                <div id="anime-grid" class="grid grid-cols-3 gap-3 mb-10">
+                    </div>
+                
+                <div class="text-center pb-8 pt-4">
+                    <div class="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-xs text-gray-500 mt-2">Memuat lebih banyak...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="search-view" class="view-section hidden pt-24 px-5 min-h-screen">
+            <div class="sticky top-20 z-30 mb-6">
+                <div class="relative group">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-500 group-focus-within:text-primary transition-colors"></i>
+                    <input type="text" id="search-input" placeholder="Cari Judul Anime (BTTH, Soul Land...)" 
+                        class="w-full bg-surface border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all text-sm text-white shadow-xl">
+                    <button onclick="document.getElementById('search-input').value=''; App.handleSearch('')" class="absolute right-4 top-3.5 text-gray-500 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div id="search-results" class="grid grid-cols-2 gap-4 pb-20">
+                <div class="col-span-2 text-center mt-20 text-gray-500 opacity-60">
+                    <i class="fas fa-keyboard text-5xl mb-4"></i>
+                    <p>Mulai ketik untuk mencari...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="library-view" class="view-section hidden pt-24 px-5 min-h-screen">
+            <h2 class="text-2xl font-bold mb-6">Pustaka Saya</h2>
+            <div class="flex p-1.5 bg-surface rounded-2xl mb-8 border border-white/5">
+                <button onclick="Library.switch('history')" id="tab-history" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-white/10 text-white shadow-lg">Riwayat</button>
+                <button onclick="Library.switch('fav')" id="tab-fav" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white">Favorit</button>
+            </div>
+            <div id="library-content" class="flex flex-col gap-4 pb-20"></div>
+        </section>
+
+        <section id="profile-view" class="view-section hidden pt-0">
+            <div class="relative w-full h-80 bg-gradient-to-b from-primary/20 to-black flex items-center justify-center flex-col">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-primary to-accent mb-4 relative shadow-2xl">
+                    <img src="https://ui-avatars.com/api/?name=Wibu+Indo&background=18181b&color=fff&size=128" class="w-full h-full rounded-full bg-black object-cover border-4 border-black">
+                    <div class="absolute bottom-1 right-1 w-7 h-7 bg-green-500 rounded-full border-4 border-black flex items-center justify-center">
+                        <i class="fas fa-check text-[8px] text-black"></i>
+                    </div>
+                </div>
+                <h2 class="text-2xl font-bold">Wibu Premium Raja iblis</h2>
+                <div class="flex gap-2 mt-2">
+                    <span class="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-[10px] font-bold border border-yellow-500/20"><i class="fas fa-crown mr-1"></i> VIP Member</span>
+                    <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-[10px] font-bold border border-blue-500/20">Level 12</span>
+                </div>
+            </div>
+
+            <div class="px-5 -mt-10 relative z-10">
+                <div class="glass-panel p-6 rounded-3xl flex justify-between mb-6 shadow-xl">
+                    <div class="text-center">
+                        <p class="text-gray-400 text-xs mb-1">Dilihat</p>
+                        <h3 class="text-xl font-bold" id="stat-watch">0</h3>
+                    </div>
+                    <div class="w-[1px] bg-white/10"></div>
+                    <div class="text-center">
+                        <p class="text-gray-400 text-xs mb-1">Favorit</p>
+                        <h3 class="text-xl font-bold" id="stat-fav">0</h3>
+                    </div>
+                    <div class="w-[1px] bg-white/10"></div>
+                    <div class="text-center">
+                        <p class="text-gray-400 text-xs mb-1">Komentar</p>
+                        <h3 class="text-xl font-bold">14</h3>
+                    </div>
+                </div>
+
+                <h3 class="font-bold mb-4 ml-1">Pengaturan</h3>
+                <div class="space-y-3 mb-10">
+                    <button class="w-full glass-panel p-4 rounded-2xl flex items-center justify-between group">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-surface text-gray-300 flex items-center justify-center"><i class="fas fa-cog"></i></div>
+                            <span class="font-medium text-sm">Akun & Keamanan</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs text-gray-600"></i>
+                    </button>
+                    <button class="w-full glass-panel p-4 rounded-2xl flex items-center justify-between group border border-red-500/10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center"><i class="fas fa-sign-out-alt"></i></div>
+                            <span class="font-medium text-sm text-red-500">Keluar Aplikasi</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div> <div id="player-view" class="fixed inset-0 bg-black z-[5000] hidden flex-col overflow-y-auto animate-slide-up">
+        <div id="video-wrapper-outer" class="sticky top-0 w-full aspect-video bg-black z-50 group shadow-2xl">
+            <video id="main-video" class="w-full h-full object-contain" playsinline webkit-playsinline></video>
+            
+            <div id="video-controls" class="absolute inset-0 bg-black/60 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="p-4 flex justify-between items-center">
+                    <button onclick="Player.close()" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white hover:bg-white/20">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <button class="w-10 h-10 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white hover:bg-white/20">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <button id="btn-center-play" class="pointer-events-auto w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center text-white shadow-[0_0_30px_rgba(99,102,241,0.5)] transform hover:scale-110 transition-transform">
+                        <i class="fas fa-play ml-1 text-xl"></i>
+                    </button>
+                </div>
+
+                <div class="p-4 bg-gradient-to-t from-black via-black/80 to-transparent">
+                    <input type="range" id="seek-bar" value="0" max="100" class="w-full mb-4">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4 text-white">
+                            <button id="btn-control-play"><i class="fas fa-play"></i></button>
+                            <span class="text-xs font-mono opacity-80" id="time-display">00:00 / 00:00</span>
+                        </div>
+                        <button id="btn-fullscreen" class="text-white hover:text-primary"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div id="video-loader" class="absolute inset-0 flex items-center justify-center z-[-1]">
+                <div class="loader-spinner"></div>
+            </div>
+        </div>
+
+        <div class="flex-1 bg-[#0f0f13] p-5 pb-20">
+            <div class="flex justify-between items-start mb-2">
+                <h1 id="p-title" class="text-xl font-bold text-white leading-tight w-3/4">Anime Title Here</h1>
+                <button onclick="Player.toggleFav()" id="p-btn-fav" class="w-10 h-10 rounded-full glass-panel flex items-center justify-center text-gray-400 active:scale-90 transition">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-3 text-xs text-gray-400 mb-6">
+                <span class="bg-primary/20 text-primary px-2 py-0.5 rounded border border-primary/20 font-bold">HD 1080p</span>
+                <span class="flex items-center gap-1"><i class="fas fa-star text-yellow-500"></i> 9.8</span>
+                <span>• Action, Fantasy</span>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mb-8">
+                <button class="flex flex-col items-center gap-2 py-2 rounded-xl active:bg-white/5 transition">
+                    <i class="fas fa-thumbs-up text-gray-400 mb-1"></i> <span class="text-[10px] text-gray-500">Like</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 py-2 rounded-xl active:bg-white/5 transition">
+                    <i class="fas fa-share-alt text-gray-400 mb-1"></i> <span class="text-[10px] text-gray-500">Share</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 py-2 rounded-xl active:bg-white/5 transition">
+                    <i class="fas fa-download text-gray-400 mb-1"></i> <span class="text-[10px] text-gray-500">Save</span>
+                </button>
+                <button class="flex flex-col items-center gap-2 py-2 rounded-xl active:bg-white/5 transition">
+                    <i class="fas fa-flag text-gray-400 mb-1"></i> <span class="text-[10px] text-gray-500">Report</span>
+                </button>
+            </div>
+
+            <div class="w-full h-[1px] bg-white/5 mb-6"></div>
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-white">Episodes</h3>
+                <span class="text-xs text-gray-500" id="p-total-ep">0 Tersedia</span>
+            </div>
+            <div id="p-episodes-grid" class="grid grid-cols-4 sm:grid-cols-5 gap-3 mb-8">
+                </div>
+
+            <div class="glass-panel rounded-3xl p-5 border border-white/5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold">Komentar</h3>
+                    <span class="text-xs text-gray-500">128 Diskusi</span>
+                </div>
+                
+                <div class="flex gap-3 mb-6 relative">
+                    <img src="https://ui-avatars.com/api/?name=User&background=random" class="w-8 h-8 rounded-full">
+                    <input type="text" id="comment-input" placeholder="Tulis komentar..." class="flex-1 bg-surface rounded-xl px-4 text-xs outline-none border border-white/5 focus:border-primary transition-colors h-10">
+                    <button onclick="Player.addComment()" class="absolute right-2 top-2 w-6 h-6 bg-primary rounded-lg flex items-center justify-center text-[10px]"><i class="fas fa-paper-plane"></i></button>
+                </div>
+
+                <div id="comment-list" class="space-y-4">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="glass-nav fixed bottom-0 left-0 right-0 z-[100] pb-safe pt-2 px-2 rounded-t-[30px]">
+        <div class="flex justify-around items-center h-[70px]">
+            <button onclick="Router.navigate('home-view')" id="nav-home" class="nav-item active flex flex-col items-center w-16 group">
+                <i class="fas fa-home text-xl mb-1 text-gray-500 group-hover:text-primary transition-colors"></i>
+                <span class="text-[10px] font-medium text-gray-500 opacity-60">Home</span>
+            </button>
+            <button onclick="Router.navigate('search-view')" id="nav-search" class="nav-item flex flex-col items-center w-16 group">
+                <i class="fas fa-compass text-xl mb-1 text-gray-500 group-hover:text-primary transition-colors"></i>
+                <span class="text-[10px] font-medium text-gray-500 opacity-60">Explore</span>
+            </button>
+            
+            <div class="relative -top-6">
+                <button onclick="Router.navigate('library-view')" class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)] border-4 border-[#0f0f13] active:scale-95 transition-transform">
+                    <i class="fas fa-bookmark text-white text-lg"></i>
+                </button>
+            </div>
+
+            <button onclick="Router.navigate('library-view')" id="nav-library" class="nav-item flex flex-col items-center w-16 group">
+                <i class="fas fa-history text-xl mb-1 text-gray-500 group-hover:text-primary transition-colors"></i>
+                <span class="text-[10px] font-medium text-gray-500 opacity-60">History</span>
+            </button>
+            <button onclick="Router.navigate('profile-view')" id="nav-profile" class="nav-item flex flex-col items-center w-16 group">
+                <i class="fas fa-user text-xl mb-1 text-gray-500 group-hover:text-primary transition-colors"></i>
+                <span class="text-[10px] font-medium text-gray-500 opacity-60">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        /**
+         * DONGHUAX ULTIMATE ENGINE
+         * ========================
+         * Complex State Management, LocalStorage, Custom Player Logic
+         */
+
+        /**
+         * DATA NORMALIZER / SANITIZER
+         * Memastikan data JSON yang masuk aman untuk UI.
+         */
+        function normalizeAnime(raw, index) {
+            // Safety: jika data null/undefined, return null agar bisa difilter nanti
+            if (!raw || typeof raw !== 'object') return null;
+
+            // 1. ID Handling
+            const safeId = raw.id || index + 1;
+
+            // 2. Image Handling (Prioritas: thumbnail -> picture -> cover -> placeholder)
+            const fallbackImg = "https://via.placeholder.com/300x400?text=No+Image";
+            const safeThumb = raw.thumbnail || raw.picture || raw.cover || fallbackImg;
+            // Banner biasanya tidak ada di DB, pakai thumbnail atau placeholder
+            const safeBanner = raw.picture || raw.thumbnail || "https://via.placeholder.com/800x450?text=No+Banner";
+
+            // 3. Episode Converter Logic
+            // UI mengharapkan: episodes = [{ num: 1, url: '...' }, { num: 2, url: '...' }]
+            // DB biasanya memberikan: episodes = 12 (Integer) atau sources = ['http...']
+            
+            let epList = [];
+            const defaultVideo = "https://www.w3schools.com/html/mov_bbb.mp4"; // Dummy video agar player jalan
+
+            // Coba ambil jumlah episode dari data
+            let count = (typeof raw.episodes === 'number') ? raw.episodes : 0;
+            if (count === 0 && Array.isArray(raw.sources)) count = raw.sources.length;
+            if (count === 0) count = 12; // Default fallback jika data episode tidak ada
+
+            // Generate Array Object Episode
+            epList = Array.from({ length: count }, (_, i) => ({
+                num: i + 1,
+                // Jika ada sources array, pakai itu. Jika tidak, pakai dummy video.
+                url: (raw.sources && raw.sources[i]) ? raw.sources[i] : defaultVideo
+            }));
+
+            // Return Object Bersih yang sesuai dengan UI
+            return {
+                id: safeId,
+                title: raw.title || "Tanpa Judul",
+                thumbnail: safeThumb,
+                banner: safeBanner,
+                status: raw.status || "Unknown",
+                type: raw.type || "TV",
+                tags: Array.isArray(raw.tags) ? raw.tags : [], // Mencegah crash pada filter
+                episodes: epList // Array ini WAJIB ada agar Player.open() tidak error
+            };
+        }
+
+        // --- 1. STATE & DATA ---
+        const DB = {
+            animes: [],
+            history: JSON.parse(localStorage.getItem('dx_history')) || [],
+            favorites: JSON.parse(localStorage.getItem('dx_favs')) || [],
+            comments: [
+                { user: "XiaoYan", text: "Episode ini grafiknya gila banget!", time: "2m" },
+                { user: "TangSan", text: "Kapan update lagi min?", time: "1h" },
+                { user: "LuoFeng", text: "Akhirnya scene ini dianimasikan!", time: "3h" }
+            ],
+
+            async init() {
+                try {
+                    // Fetch JSON Database
+                    const res = await fetch('animes.json');
+                    
+                    if (!res.ok) throw new Error("Gagal load JSON");
+                    
+                    let rawData = await res.json();
+                    
+                    // Handle jika struktur JSON adalah { data: [...] } bukan array langsung
+                    if (!Array.isArray(rawData) && rawData.data) {
+                        rawData = rawData.data;
+                    }
+
+                    // NORMALISASI DATA
+                    if (Array.isArray(rawData)) {
+                        this.animes = rawData
+                            .map((item, index) => normalizeAnime(item, index))
+                            .filter(item => item !== null); // Buang data yang gagal dinormalisasi
+                    }
+
+                    // Jika hasil kosong, throw error untuk memicu fallback
+                    if (this.animes.length === 0) throw new Error("Data Kosong");
+
+                } catch (e) {
+                    console.warn("JSON Failed/Not Found or Empty. Using Fallback Data.", e);
+                    // Fallback Data so app is viewable without file
+                    this.animes = this.generateMockData();
+                }
+                UI.init();
+            },
+
+            saveHistory(id, ep) {
+                this.history = this.history.filter(h => h.id !== id);
+                this.history.unshift({id, ep, time: Date.now()});
+                localStorage.setItem('dx_history', JSON.stringify(this.history));
+                UI.updateStats();
+            },
+
+            toggleFav(id) {
+                if (this.favorites.includes(id)) {
+                    this.favorites = this.favorites.filter(f => f !== id);
+                    UI.toast("Dihapus dari Favorit", "info");
+                    return false;
+                } else {
+                    this.favorites.push(id);
+                    UI.toast("Ditambahkan ke Favorit", "love");
+                    localStorage.setItem('dx_favs', JSON.stringify(this.favorites));
+                    UI.updateStats();
+                    return true;
+                }
+            },
+
+            generateMockData() {
+                // Generate 20 items logic if json missing
+                return Array.from({length: 20}, (_, i) => ({
+                    id: i+1,
+                    title: i === 0 ? "Battle Through The Heavens" : i === 1 ? "Soul Land" : `Donghua Title ${i+1}`,
+                    thumbnail: `https://picsum.photos/300/400?random=${i}`,
+                    banner: `https://picsum.photos/800/450?random=${i}`,
+                    status: i % 2 === 0 ? "Ongoing" : "Completed",
+                    episodes: Array.from({length: 10 + Math.floor(Math.random()*50)}, (_, j) => ({
+                        num: j+1,
+                        url: "https://www.w3schools.com/html/mov_bbb.mp4" // Dummy video
+                    }))
+                }));
+            }
+        };
+
+        // --- 2. UI RENDERER ---
+        const UI = {
+            init() {
+                this.renderHome();
+                this.updateStats();
+                // Remove Splash
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById('splash-screen').style.display = 'none';
+                        document.getElementById('app').classList.remove('hidden');
+                        document.getElementById('app').classList.add('animate-fade-in');
+                    }, 600);
+                }, 1500);
+            },
+
+            toast(msg, type = 'success') {
+                const box = document.getElementById('toast-container');
+                const el = document.createElement('div');
+                const color = type === 'love' ? 'text-red-500' : 'text-primary';
+                el.className = "glass-panel px-4 py-3 rounded-full mb-2 flex items-center gap-3 shadow-2xl animate-pop";
+                el.innerHTML = `<i class="fas fa-check-circle ${color}"></i> <span class="text-xs font-bold">${msg}</span>`;
+                box.appendChild(el);
+                setTimeout(() => el.remove(), 2500);
+            },
+
+            renderHome() {
+                // Check if Data exists
+                if(!DB.animes.length) return;
+
+                // Slider
+                const sliderWrap = document.getElementById('hero-slider-container');
+                sliderWrap.innerHTML = DB.animes.slice(0, 5).map(a => `
+                    <div class="swiper-slide cursor-pointer" onclick="Player.open(${a.id})">
+                        <img src="${a.banner}" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-6 right-6 z-20">
+                            <span class="bg-primary/90 text-white px-2 py-0.5 rounded text-[9px] font-bold mb-2 inline-block backdrop-blur-sm">TRENDING #1</span>
+                            <h2 class="text-2xl font-black italic mb-2 leading-none drop-shadow-lg text-clamp-2">${a.title}</h2>
+                            <button class="bg-white text-black px-6 py-2 rounded-xl font-bold text-xs mt-2 hover:bg-gray-200 transition">Tonton Sekarang</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                new Swiper(".main-swiper", { 
+                    pagination: { el: ".swiper-pagination", clickable: true }, 
+                    autoplay: { delay: 4000 }, 
+                    effect: 'fade'
+                });
+
+                // Trending (Horizontal)
+                document.getElementById('trending-grid').innerHTML = DB.animes.slice(0, 8).map(a => `
+                    <div onclick="Player.open(${a.id})" class="min-w-[110px] w-[110px] cursor-pointer group">
+                        <div class="aspect-[3/4] rounded-xl overflow-hidden mb-2 relative">
+                            <img src="${a.thumbnail}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute top-1 right-1 bg-black/60 backdrop-blur px-1.5 rounded text-[8px] font-bold">HD</div>
+                        </div>
+                        <h4 class="text-[10px] font-bold truncate group-hover:text-primary transition">${a.title}</h4>
+                    </div>
+                `).join('');
+
+                // Main Grid
+                document.getElementById('anime-grid').innerHTML = DB.animes.map(a => `
+                    <div onclick="Player.open(${a.id})" class="cursor-pointer group">
+                        <div class="aspect-[3/4] rounded-xl overflow-hidden mb-2 relative bg-surface">
+                            <img src="${a.thumbnail}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                        </div>
+                        <h4 class="text-[11px] font-bold leading-tight line-clamp-2 group-hover:text-primary transition">${a.title}</h4>
+                        <p class="text-[9px] text-gray-500 mt-1">${a.status}</p>
+                    </div>
+                `).join('');
+            },
+
+            updateStats() {
+                document.getElementById('stat-watch').innerText = DB.history.length;
+                document.getElementById('stat-fav').innerText = DB.favorites.length;
+            }
+        };
+
+        // --- 3. ROUTER ---
+        const Router = {
+            current: 'home-view',
+            navigate(viewId) {
+                // Update Nav UI
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                const navMap = { 'home-view': 'nav-home', 'search-view': 'nav-search', 'library-view': 'nav-library', 'profile-view': 'nav-profile' };
+                if (navMap[viewId]) document.getElementById(navMap[viewId])?.classList.add('active');
+
+                // Switch View with Animation
+                const oldView = document.getElementById(this.current);
+                const newView = document.getElementById(viewId);
+                
+                oldView.style.opacity = '0';
+                setTimeout(() => {
+                    oldView.classList.add('hidden');
+                    newView.classList.remove('hidden');
+                    
+                    // Library Logic
+                    if(viewId === 'library-view') Library.load();
+
+                    // Animate In
+                    requestAnimationFrame(() => {
+                        newView.style.opacity = '1';
+                        newView.classList.add('animate-fade-in');
+                        window.scrollTo(0,0);
+                    });
+                }, 200);
+                
+                this.current = viewId;
+            }
+        };
+
+        // --- 4. PLAYER LOGIC (FIXED VIDEO CONTROLS) ---
+        const Player = {
+            video: document.getElementById('main-video'),
+            overlay: document.getElementById('player-view'),
+            container: document.getElementById('video-wrapper-outer'),
+            activeId: null,
+
+            init() {
+                // Bind Controls
+                const playBtn = document.getElementById('btn-control-play');
+                const bigPlayBtn = document.getElementById('btn-center-play');
+                const fsBtn = document.getElementById('btn-fullscreen');
+                const seekBar = document.getElementById('seek-bar');
+                
+                const toggle = () => {
+                    if (this.video.paused) {
+                        this.video.play();
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        bigPlayBtn.style.opacity = '0';
+                        bigPlayBtn.style.transform = 'scale(0.5)';
+                    } else {
+                        this.video.pause();
+                        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        bigPlayBtn.style.opacity = '1';
+                        bigPlayBtn.style.transform = 'scale(1)';
+                    }
+                };
+
+                playBtn.onclick = toggle;
+                bigPlayBtn.onclick = toggle;
+                this.video.onclick = toggle;
+
+                // Time Update
+                this.video.ontimeupdate = () => {
+                    const pct = (this.video.currentTime / this.video.duration) * 100;
+                    seekBar.value = isNaN(pct) ? 0 : pct;
+                    document.getElementById('time-display').innerText = this.formatTime(this.video.currentTime);
+                };
+
+                // Seek
+                seekBar.oninput = (e) => {
+                    const time = (this.video.duration / 100) * e.target.value;
+                    this.video.currentTime = time;
+                };
+
+                // Fullscreen (Container based)
+                fsBtn.onclick = () => {
+                    if (!document.fullscreenElement) {
+                        this.container.requestFullscreen();
+                        fsBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                    } else {
+                        document.exitFullscreen();
+                        fsBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                    }
+                };
+            },
+
+            open(id) {
+                const anime = DB.animes.find(a => a.id === id);
+                if (!anime) return;
+                this.activeId = id;
+
+                // Setup UI
+                document.getElementById('p-title').innerText = anime.title;
+                document.getElementById('p-total-ep').innerText = `${anime.episodes.length} Eps`;
+                
+                // Fav Status
+                const isFav = DB.favorites.includes(id);
+                document.getElementById('p-btn-fav').innerHTML = isFav ? '<i class="fas fa-heart text-red-500"></i>' : '<i class="far fa-heart"></i>';
+
+                // Episodes Grid
+                // Karena data sudah dinormalisasi, anime.episodes DIJAMIN Array.
+                // Tidak akan crash di sini.
+                document.getElementById('p-episodes-grid').innerHTML = anime.episodes.map(ep => `
+                    <button onclick="Player.playEp('${ep.url}', ${ep.num}, this)" 
+                        class="ep-btn glass-panel py-3 rounded-lg font-bold text-sm text-gray-300 hover:bg-primary hover:text-white transition border border-white/5 relative overflow-hidden group">
+                        ${ep.num}
+                    </button>
+                `).join('');
+
+                // Render Comments
+                this.renderComments();
+
+                // Show Player
+                this.overlay.classList.remove('hidden');
+                this.overlay.classList.add('flex');
+                
+                // Auto Play First or History
+                const hist = DB.history.find(h => h.id === id);
+                const startEp = hist ? anime.episodes.find(e => e.num === hist.ep) : anime.episodes[0];
+                if(startEp) {
+                    // Slight delay to allow DOM render
+                    setTimeout(() => {
+                        const buttons = document.querySelectorAll('.ep-btn');
+                        if(buttons[startEp.num-1]) buttons[startEp.num-1].click();
+                    }, 300);
+                }
+            },
+
+            playEp(url, num, btn) {
+                // Highlight
+                document.querySelectorAll('.ep-btn').forEach(b => {
+                    b.classList.remove('bg-primary', 'text-white', 'shadow-lg');
+                    b.classList.add('glass-panel', 'text-gray-300');
+                });
+                btn.classList.remove('glass-panel', 'text-gray-300');
+                btn.classList.add('bg-primary', 'text-white', 'shadow-lg');
+
+                // Play
+                this.video.src = url;
+                this.video.play();
+                document.getElementById('btn-center-play').style.opacity = '0';
+                document.getElementById('btn-control-play').innerHTML = '<i class="fas fa-pause"></i>';
+                
+                // History
+                DB.saveHistory(this.activeId, num);
+            },
+
+            close() {
+                this.video.pause();
+                this.overlay.classList.add('hidden');
+                this.overlay.classList.remove('flex');
+                this.video.src = "";
+            },
+
+            toggleFav() {
+                const res = DB.toggleFav(this.activeId);
+                document.getElementById('p-btn-fav').innerHTML = res ? '<i class="fas fa-heart text-red-500 animate-pop"></i>' : '<i class="far fa-heart"></i>';
+            },
+
+            addComment() {
+                const inp = document.getElementById('comment-input');
+                if(!inp.value) return;
+                DB.comments.unshift({ user: "Anda", text: inp.value, time: "Baru saja" });
+                this.renderComments();
+                inp.value = "";
+                UI.toast("Komentar terkirim");
+            },
+
+            renderComments() {
+                document.getElementById('comment-list').innerHTML = DB.comments.map(c => `
+                    <div class="flex gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center text-[10px] font-bold shrink-0 border border-white/10">${c.user[0]}</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-gray-300">${c.user} <span class="text-[9px] text-gray-600 font-normal ml-2">${c.time}</span></h4>
+                            <p class="text-xs text-gray-400 mt-1">${c.text}</p>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            formatTime(s) {
+                const min = Math.floor(s/60);
+                const sec = Math.floor(s%60);
+                return `${min}:${sec<10?'0'+sec:sec}`;
+            }
+        };
+
+        // --- 5. LIBRARY & SEARCH LOGIC ---
+        const Library = {
+            current: 'history',
+            load() { this.switch(this.current); },
+            switch(tab) {
+                this.current = tab;
+                const container = document.getElementById('library-content');
+                const btnHist = document.getElementById('tab-history');
+                const btnFav = document.getElementById('tab-fav');
+
+                if (tab === 'history') {
+                    btnHist.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-white/10 text-white shadow-lg";
+                    btnFav.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white";
+                    
+                    if(DB.history.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 mt-10">Belum ada riwayat.</div>';
+                    
+                    container.innerHTML = DB.history.map(h => {
+                        const anime = DB.animes.find(a => a.id === h.id);
+                        if(!anime) return '';
+                        return `
+                            <div onclick="Player.open(${h.id})" class="glass-panel p-3 rounded-2xl flex gap-4 active:scale-[0.98] transition">
+                                <img src="${anime.thumbnail}" class="w-20 h-24 object-cover rounded-xl shadow-lg">
+                                <div class="flex flex-col justify-center">
+                                    <h4 class="font-bold text-sm text-white mb-1">${anime.title}</h4>
+                                    <p class="text-xs text-primary font-medium">Lanjut Episode ${h.ep}</p>
+                                    <p class="text-[10px] text-gray-500 mt-2">Ditonton baru saja</p>
+                                </div>
+                                <div class="ml-auto flex items-center justify-center"><i class="fas fa-play-circle text-2xl text-white/50"></i></div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    btnFav.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all bg-white/10 text-white shadow-lg";
+                    btnHist.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white";
+                    
+                    if(DB.favorites.length === 0) return container.innerHTML = '<div class="text-center text-gray-500 mt-10">Belum ada favorit.</div>';
+
+                    const favList = DB.animes.filter(a => DB.favorites.includes(a.id));
+                    container.innerHTML = `<div class="grid grid-cols-2 gap-4">
+                        ${favList.map(a => `
+                            <div onclick="Player.open(${a.id})" class="glass-panel p-2 rounded-xl">
+                                <img src="${a.thumbnail}" class="aspect-[3/4] object-cover rounded-lg mb-2 w-full">
+                                <h4 class="text-xs font-bold truncate px-1">${a.title}</h4>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+            }
+        };
+
+        const App = {
+            handleSearch(q) {
+                const resDiv = document.getElementById('search-results');
+                if(!q) return resDiv.innerHTML = '<div class="col-span-2 text-center mt-20 text-gray-500"><i class="fas fa-keyboard text-5xl mb-4"></i><p>Ketik judul...</p></div>';
+                
+                // Gunakan optional chaining dan toLowerCase aman
+                const matches = DB.animes.filter(a => a.title && a.title.toLowerCase().includes(q.toLowerCase()));
+                if(matches.length === 0) return resDiv.innerHTML = '<div class="col-span-2 text-center mt-10 text-gray-500">Tidak ditemukan.</div>';
+                
+                resDiv.innerHTML = matches.map(a => `
+                    <div onclick="Player.open(${a.id})" class="glass-panel rounded-xl overflow-hidden cursor-pointer group">
+                        <img src="${a.thumbnail}" class="w-full aspect-[3/4] object-cover">
+                        <div class="p-3">
+                            <h4 class="text-xs font-bold truncate group-hover:text-primary">${a.title}</h4>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        };
+
+        // Initialize Global Listeners
+        document.getElementById('search-input').addEventListener('input', (e) => App.handleSearch(e.target.value));
+        
+        // Start App
+        Player.init();
+        DB.init();
+
+    </script>
+</body>
+</html>
